@@ -1,0 +1,59 @@
+.login-container {
+  display: flex;
+}
+
+.login {
+  flex: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.login-image {
+  width: 500px;
+  height: 100vh;
+  object-fit: cover;
+}
+
+.icon-container {
+  display: table;
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+}
+
+.icon {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.icons {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  font-size: 2rem;
+  gap: 10px;
+}
+
+.facebook,
+.linkedin {
+  background-color: rgb(74, 84, 107);
+  color: white;
+}
+
+.google {
+  background-color: rgb(206, 87, 67);
+  color: white;
+}
+
+@media only screen and (max-width: 1003px) {
+  .login-image {
+    display: none;
+  }
+  .login {
+    flex: 100%;
+  }
+}
