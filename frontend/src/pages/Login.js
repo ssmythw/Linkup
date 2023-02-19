@@ -39,7 +39,7 @@ export const Login = () => {
               className="form-control"
               id="exampleInputEmail1"
               aria-describedby="emailHelp"
-              placeholder="Passwor"
+              placeholder="Password"
             />
           </div>
           <button
