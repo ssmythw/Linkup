@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS messages CASCADE;
+CREATE TABLE messages (
+  id SERIAL PRIMARY KEY NOT NULL,
+  content TEXT,
+  user_id INTEGER NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
