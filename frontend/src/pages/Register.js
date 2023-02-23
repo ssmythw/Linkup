@@ -5,7 +5,6 @@ import "../styles/login-register.css";
 import sideImage from "../assets/login-image.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import ProfilePic from "../assets/profile-pic.jpg";
-import { API_URL } from "../utils/APIRoutes";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -18,6 +17,8 @@ const Register = () => {
   const [image, setImage] = useState(null);
   const [uploadingImg, setUploadingImg] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+
+  const API_URL = "https://api.cloudinary.com/v1_1/dmlxrsrox/image/upload";
 
   const toastOptions = {
     position: "bottom-center",
