@@ -8,17 +8,24 @@ router.post("/", async (req, res) => {
     console.log(req.body);
     const hash = await bcrypt.hash(password, 10);
     const user = await createUser(username, email, hash, image);
+    user = user.rows[0];
+    delete user.password;
     res.status(201).json(user);
   } catch (err) {
-    res.status(400).json({ msg: err.message });
+    let msg;
+    if (err.code === "23505") {
+      msg = "User already exists";
+    } else {
+      msg = err.message;
+    }
+    res.status(400).json(msg);
   }
 });
 
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await findByUsername(username);
-    console.log(user);
+    let user = await findByUsername(username);
     if (user.rows.length === 0) {
       throw new Error("User does not exist");
     }
