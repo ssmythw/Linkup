@@ -1,0 +1,15 @@
+.sidebar-chat {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.sidebar-chat__info h2 {
+  font: 16px;
+  margin-bottom: 1px;
+}
+
+.sidebar-chat__info {
+  margin-left: 15px;
+}

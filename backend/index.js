@@ -1,25 +1,29 @@
 const express = require("express");
 const cors = require("cors");
-const userRoutes = require("./routes/userRoutes");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const messageRoutes = require("./routes/messageRoutes");
 require("dotenv").config();
-require("./db/connection");
 
 const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-//routes
-app.use("/users", userRoutes);
-
-const server = require("http").createServer(app);
-const io = require("socket.io")(server, {
-  cors: {
-    origin: process.env.CLIENT_URL,
-    methods: ["GET", "POST"],
-  },
+//db connection
+mongoose.set("strictQuery", false);
+mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
-server.listen(process.env.PORT, () => {
+//middleware
+app.use(cors());
+app.use(express.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+//middleware routes
+app.use("/messages", messageRoutes);
+
+app.listen(process.env.PORT, () => {
   console.log(`Server started on port ${process.env.PORT}`);
 });
