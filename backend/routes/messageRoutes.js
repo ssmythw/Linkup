@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const Message = require("../models/message");
+const Messages = require("../models/message");
 
 router.post("/create", (req, res) => {
   const message = req.body;
-  Message.create(message, (err, data) => {
+  Messages.create(message, (err, data) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -13,7 +13,8 @@ router.post("/create", (req, res) => {
 });
 
 router.get("/sync", (req, res) => {
-  Message.find((err, data) => {
+  console.log("here");
+  Messages.find((err, data) => {
     if (err) {
       res.status(500).send(err);
     } else {

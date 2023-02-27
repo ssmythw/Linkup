@@ -3,12 +3,12 @@ import Sidebar from "../components/Sidebar";
 import MessageForm from "../components/MessageForm";
 import "../styles/chat.css";
 
-const Chat = () => {
+const Chat = ({ messages }) => {
   return (
     <div className="app">
       <div className="app__body">
         <Sidebar />
-        <MessageForm />
+        <MessageForm messages={messages} />
       </div>
     </div>
   );
