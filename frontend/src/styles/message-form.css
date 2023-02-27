@@ -1,5 +1,5 @@
-h3,
-p {
+.sidebar h3,
+.sidebarp {
   margin-bottom: 0px !important;
 }
 
@@ -9,7 +9,6 @@ p {
   display: flex;
   flex-direction: column;
   flex: 0.75;
-  box-shadow: 1px 1px 10px black;
 }
 
 .chat .MuiSvgIcon-root {
@@ -35,14 +34,15 @@ p {
 }
 
 .chat__message {
+  background-color: white;
+  color: black;
+  margin-bottom: 30px;
+  padding: 10px;
   position: relative;
   font-size: 16px;
   padding: 10px;
   width: fit-content !important;
   border-radius: 10px;
-  background-color: white;
-  color: black;
-  margin-bottom: 30px !important;
 }
 
 .chat__timestamp {
@@ -59,10 +59,10 @@ p {
   color: white;
 }
 
-.chat__receiver {
-  margin-left: auto;
+.message__sent {
   background-color: rgb(255, 50, 50);
   color: white;
+  margin-left: auto;
 }
 
 .chat__footer {

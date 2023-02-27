@@ -51,7 +51,7 @@
 .sidebar__search-container input {
   border: none;
   outline-width: 0;
-  width: 80%;
+  width: 60%;
 }
 
 .sidebar__chats:hover {

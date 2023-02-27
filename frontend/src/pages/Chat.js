@@ -4,6 +4,7 @@ import MessageForm from "../components/MessageForm";
 import "../styles/chat.css";
 
 const Chat = ({ messages }) => {
+  console.log(messages);
   return (
     <div className="app">
       <div className="app__body">

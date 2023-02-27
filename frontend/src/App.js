@@ -10,11 +10,12 @@ import Pusher from "pusher-js";
 
 function App() {
   const [messages, setMessages] = useState([]);
-
   useEffect(() => {
     fetch("http://localhost:8080/messages/sync")
       .then((response) => response.json())
-      .then((data) => setMessages(data));
+      .then((data) => {
+        setMessages(data);
+      });
   }, []);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/chat" messages={messages} element={<Chat />} />
+        <Route path="/chat" element={<Chat messages={messages} />} />
         <Route path="/" element={<Home />} />
       </Routes>
       <Footer />
