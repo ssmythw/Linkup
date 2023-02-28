@@ -4,7 +4,7 @@ import AttachFileIcon from "@material-ui/icons/AttachFile";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 import MicIcon from "@material-ui/icons/Mic";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "../styles/message-form.css";
 
 const MessageForm = ({ messages }) => {
@@ -12,34 +12,14 @@ const MessageForm = ({ messages }) => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    fetch("http://localhost:8080/messages/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message: input,
-        name: "DEMO APP",
-        timestamp: "Just now",
-        received: false,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setInput("");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
   };
-
   return (
     <>
       <div className="chat">
         <div className="chat__header">
           <Avatar className="avatar" />
           <div className="chat__header-info">
-            <h3>Channel Name</h3>
+            <h3> Channel Name</h3>
             <p>Last seen at...</p>
           </div>
           <div className="chat__header-right">

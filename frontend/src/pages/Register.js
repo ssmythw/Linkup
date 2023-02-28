@@ -5,8 +5,13 @@ import "../styles/login-register.css";
 import sideImage from "../assets/login-image.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import ProfilePic from "../assets/profile-pic.jpg";
+import { setUser } from "../features/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 const Register = () => {
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const [values, setValues] = useState({
     username: "",
@@ -41,24 +46,34 @@ const Register = () => {
     const email = values.email;
     const password = values.password;
 
-    fetch("http://localhost:8080/users/create", {
-      method: "POST",
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-        image: url,
-      }),
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {})
-      .catch((err) => {
-        toast.error("Username or email already exists", toastOptions);
+    try {
+      const user = await fetch("http://localhost:8080/users/create", {
+        method: "POST",
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          image: url,
+        }),
+        mode: "cors",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+
+      const data = await user.json();
+
+      dispatch(
+        setUser({
+          username: data.username,
+          email: data.email,
+          image: data.image,
+        })
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const uploadImage = async () => {
