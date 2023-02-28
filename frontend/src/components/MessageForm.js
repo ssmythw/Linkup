@@ -13,7 +13,7 @@ const MessageForm = ({ messages }) => {
   const sendMessage = (e) => {
     e.preventDefault();
     fetch("http://localhost:8080/messages/create", {
-      method: "POST", // or 'PUT'
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },

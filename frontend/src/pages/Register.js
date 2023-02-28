@@ -36,7 +36,29 @@ const Register = () => {
       toast.error("Please upload a profile picture", toastOptions);
     }
     const url = await uploadImage(image);
-    //sign up the user
+
+    const username = values.username;
+    const email = values.email;
+    const password = values.password;
+
+    fetch("http://localhost:8080/users/create", {
+      method: "POST",
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        image: url,
+      }),
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {})
+      .catch((err) => {
+        toast.error("Username or email already exists", toastOptions);
+      });
   };
 
   const uploadImage = async () => {

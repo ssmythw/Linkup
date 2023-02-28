@@ -4,8 +4,10 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const Pusher = require("pusher");
 const messageRoutes = require("./routes/messageRoutes");
+const userRoutes = require("./routes/userRoutes");
 require("dotenv").config();
 const message = require("./models/message");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -28,7 +30,6 @@ const db = mongoose.connection;
 db.once("open", () => {
   console.log("db connected");
   message.watch().on("change", (data) => {
-    console.log("a change has occured");
     if (data.operationType === "insert") {
       const messageDetails = data.fullDocument;
       console.log(messageDetails);
@@ -50,8 +51,10 @@ app.use(
     extended: true,
   })
 );
+app.use(cookieParser());
 //middleware routes
 app.use("/messages", messageRoutes);
+app.use("/users", userRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server started on port ${process.env.PORT}`);
