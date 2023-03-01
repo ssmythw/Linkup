@@ -19,8 +19,7 @@ const MessageForm = ({ messages }) => {
         <div className="chat__header">
           <Avatar className="avatar" />
           <div className="chat__header-info">
-            <h3> Channel Name</h3>
-            <p>Last seen at...</p>
+            <h3> Contractors</h3>
           </div>
           <div className="chat__header-right">
             <IconButton>
@@ -50,7 +49,7 @@ const MessageForm = ({ messages }) => {
           })}
         </div>
         <div className="chat__footer">
-          <InsertEmoticonIcon />
+          <InsertEmoticonIcon style={{ marginRight: "10px" }} />
           <form>
             <input
               value={input}
@@ -58,7 +57,11 @@ const MessageForm = ({ messages }) => {
               placeholder="Type a message"
               type="text"
             />
-            <button onClick={sendMessage} type="submit">
+            <button
+              onClick={sendMessage}
+              style={{ marginLeft: "10px" }}
+              type="submit"
+            >
               Send a message
             </button>
           </form>

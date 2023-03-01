@@ -47,7 +47,7 @@ const Login = () => {
     <div className="container">
       <div className="login-container">
         <div className="login">
-          <h1>Login to Your Account</h1>
+          <h1 style={{ marginBottom: "10px" }}>Login to Your Account</h1>
           <h4 style={{ color: "grey" }}>Login using Social Media</h4>
           <div className="icons">
             <div className="icon-container facebook">

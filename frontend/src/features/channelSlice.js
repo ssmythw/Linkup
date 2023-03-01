@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  channel: "",
+  channel: "contractors",
 };
 
 export const channelSlice = createSlice({

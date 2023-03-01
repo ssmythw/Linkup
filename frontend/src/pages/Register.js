@@ -114,7 +114,7 @@ const Register = () => {
       {" "}
       <div className="login-container">
         <div className="login">
-          <h1>Register For Your Account</h1>
+          <h1 style={{ marginBottom: "10px" }}>Register For Your Account</h1>
           <h4 style={{ color: "grey" }}>Register using Social Media</h4>
           <div className="icons">
             <div className="icon-container facebook">

@@ -15,6 +15,9 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  channels: {
+    type: Array,
+  },
   image: {
     type: String,
     required: true,

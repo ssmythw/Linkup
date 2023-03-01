@@ -13,3 +13,17 @@
 .sidebar-chat__info {
   margin-left: 15px;
 }
+
+.title-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title-header .MuiSvgIcon-root {
+  color: white;
+}
+
+.sidebar-chat:hover {
+  background-color: grey;
+}

@@ -1,13 +1,12 @@
 import { Avatar } from "@material-ui/core";
 import React, { useRef } from "react";
 import "../styles/sidebarchat.css";
-import { setChannel } from "../features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { IconButton } from "@material-ui/core";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
 const SidebarChat = () => {
   const channelName = useRef();
-  const channel = useSelector((state) => state.channel);
-
   const dispatch = useDispatch();
 
   const setChannel = () => {
@@ -16,13 +15,21 @@ const SidebarChat = () => {
   };
 
   return (
-    <div className="sidebar-chat">
-      <Avatar />
-      <div className="sidebar-chat__info" onClick={setChannel}>
-        <h2 ref={channelName}>Contractors</h2>
-        <p>Last message in the channel</p>
+    <>
+      <div className="title-header">
+        <h4 style={{ marginLeft: "10px" }}>Conversations</h4>
+        <IconButton>
+          <AddCircleOutlineIcon />
+        </IconButton>
       </div>
-    </div>
+      <div className="sidebar-chat">
+        <Avatar />
+        <div className="sidebar-chat__info" onClick={setChannel}>
+          <h5 ref={channelName}>Contractors</h5>
+        </div>
+      </div>
+      <br />
+    </>
   );
 };
 

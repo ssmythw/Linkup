@@ -21,3 +21,17 @@ code {
 .form-group {
   margin-top: 15px !important;
 }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: 0px;
+}
+
+input {
+  outline-width: 0px;
+  outline: none;
+}

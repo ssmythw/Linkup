@@ -19,7 +19,12 @@
   padding: 20px;
   display: flex;
   align-items: center;
+  justify-content: center;
   border-bottom: 1px solid black;
+}
+
+.chat__header h3 {
+  margin-bottom: 0px;
 }
 
 .chat__header-info {
