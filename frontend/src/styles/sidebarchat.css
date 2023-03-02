@@ -27,3 +27,17 @@
 .sidebar-chat:hover {
   background-color: grey;
 }
+
+.modal-body__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-body__form input {
+  width: 90%;
+}
+
+.modal-title {
+  color: black;
+}

@@ -47,10 +47,9 @@ db.once("open", () => {
       const messageDetails = data.fullDocument;
       console.log(messageDetails);
       pusher.trigger("messages", "inserted", {
-        name: messageDetails.name,
+        username: messageDetails.username,
         message: messageDetails.message,
         timestamp: messageDetails.timestamp,
-        receieved: messageDetails.received,
       });
     }
   });

@@ -4,4 +4,8 @@ const createUser = (username, email, hash, image) => {
   return User.create({ username, email, password: hash, image });
 };
 
-module.exports = { createUser };
+const getUserById = (id) => {
+  return User.find({ _id: id });
+};
+
+module.exports = { createUser, getUserById };

@@ -1,26 +1,18 @@
 const router = require("express").Router();
-const Messages = require("../models/message");
+const {
+  getMessagesByConversation,
+  createMessage,
+} = require("../queries/message");
 
 router.post("/create", (req, res) => {
-  const message = req.body;
-  Messages.create(message, (err, data) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.status(201).json(data);
-    }
-  });
+  const { username, message, conversation, timestamp } = req.body;
+  createMessage(username, message, conversation, timestamp);
 });
 
-router.get("/sync", (req, res) => {
-  console.log("here");
-  Messages.find((err, data) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.status(201).json(data);
-    }
-  });
+router.post("/sync", async (req, res) => {
+  const conversation = req.body.conversation;
+  const messages = await getMessagesByConversation(conversation);
+  res.status(200).json(messages);
 });
 
 module.exports = router;

@@ -5,12 +5,16 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import SearchIcon from "@material-ui/icons/Search";
 import { Avatar, IconButton } from "@material-ui/core";
 import SidebarChat from "./SidebarChat";
+import { useSelector } from "react-redux";
 
 const Sidebar = () => {
+  const state = useSelector((state) => state);
+  const user = state.user;
+
   return (
     <div className="sidebar">
       <div className="sidebar__header">
-        <Avatar />
+        <Avatar src={user.image} />
         <div className="sidebar__headerRight">
           <IconButton>
             <ChatIcon />

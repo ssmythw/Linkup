@@ -5,30 +5,33 @@ import "../styles/chat.css";
 import { useState } from "react";
 import Pusher from "pusher-js";
 import Cookies from "js-cookie";
-import { setUser } from "../features/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
 
-  const state = useSelector((state) => state.channel);
+  const conversationState = useSelector((state) => state.conversation);
+  const conversation = conversationState.conversation;
 
-  console.log(state.channel);
+  //get all the messages for the current conversation
 
-  const userId = Cookies.get("user_id");
-
-  // useEffect(() => {
-  //   fetch("http://localhost:8080/messages/sync", {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //     }),
-  //     mode: "cors",
-  //     credentials: "include",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-  // }, []);
+  useEffect(() => {
+    fetch("http://localhost:8080/messages/sync", {
+      method: "POST",
+      body: JSON.stringify({
+        conversation,
+      }),
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((messages) => messages.json())
+      .then((data) => {
+        setMessages(data);
+      });
+  }, []);
 
   useEffect(() => {
     const pusher = new Pusher("8897d49bca636ec4a9cd", {
