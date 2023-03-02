@@ -4,8 +4,8 @@ const getMessagesByConversation = (conversation) => {
   return Message.find({ conversation: conversation });
 };
 
-const createMessage = async (username, message, conversation) => {
-  await Message.create({
+const createMessage = (username, message, conversation) => {
+  return Message.create({
     username: username,
     message: message,
     conversation: conversation,

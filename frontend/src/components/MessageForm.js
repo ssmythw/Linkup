@@ -30,13 +30,28 @@ const MessageForm = ({ messages }) => {
       headers: {
         "Content-Type": "application/json",
       },
-    });
+    })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
   return (
     <>
       <div className="chat">
         <div className="chat__header">
-          <Avatar className="avatar" />
+          <div
+            style={{
+              height: "40px",
+              width: "40px",
+              borderRadius: "10px",
+              backgroundColor: "lightgrey",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              color: "black",
+            }}
+          >
+            #
+          </div>
           <div className="chat__header-info">
             <h3> Contractors</h3>
           </div>
@@ -53,16 +68,21 @@ const MessageForm = ({ messages }) => {
           </div>
         </div>
         <div className="chat__body">
-          {messages?.map((message) => {
+          {messages?.map((message, i) => {
             return (
               <p
+                key={i}
                 className={`chat__message ${
                   message.username === user.username ? "message__sent" : ""
                 }`}
               >
-                <span className="chat__name">{message.username}</span>
+                <span key={i + 1} className="chat__name">
+                  {message.username}
+                </span>
                 {message.message}
-                <span className="chat__timestamp">{message.timestamp}</span>
+                <span key={i + 2} className="chat__timestamp">
+                  {message.timestamp}
+                </span>
               </p>
             );
           })}

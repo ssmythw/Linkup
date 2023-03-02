@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const Pusher = require("pusher");
 const messageRoutes = require("./routes/messageRoutes");
 const userRoutes = require("./routes/userRoutes");
+const conversationRoutes = require("./routes/conversationRoutes");
 require("dotenv").config();
 const message = require("./models/message");
 const cookieParser = require("cookie-parser");
@@ -23,6 +24,7 @@ app.use(cookieParser());
 //middleware routes
 app.use("/messages", messageRoutes);
 app.use("/users", userRoutes);
+app.use("/conversations", conversationRoutes);
 
 //db connection
 mongoose.set("strictQuery", false);

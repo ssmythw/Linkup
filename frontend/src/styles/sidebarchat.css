@@ -35,9 +35,17 @@
 }
 
 .modal-body__form input {
-  width: 90%;
+  width: 80%;
 }
 
 .modal-title {
   color: black;
+}
+
+.conversation-container {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  flex-wrap: wrap;
 }
