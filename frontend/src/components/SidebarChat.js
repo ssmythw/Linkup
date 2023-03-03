@@ -1,16 +1,21 @@
 import { Avatar } from "@material-ui/core";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../styles/sidebarchat.css";
 import { useSelector, useDispatch } from "react-redux";
 import { IconButton } from "@material-ui/core";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
-import ClearIcon from "@material-ui/icons/Clear";
+import Cookies from "js-cookie";
+import { setConversation } from "../features/conversationSlice";
 
 const SidebarChat = () => {
   const [modalInput, setModalInput] = useState("");
   const [conversations, setConversations] = useState([]);
+
+  const dispatch = useDispatch();
+
+  const id = Cookies.get("user_id");
 
   const state = useSelector((state) => state);
   const user = state.user;
@@ -25,8 +30,23 @@ const SidebarChat = () => {
     theme: "dark",
   };
 
-  const deleteConversation = (convo) => {
-    setConversations(conversations.filter((item) => item !== convo));
+  useEffect(() => {
+    fetch(`http://localhost:8080/users/conversations/${id}`, {
+      method: "GET",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((convos) => {
+        setConversations(convos);
+      });
+  });
+
+  const switchConversation = (convo) => {
+    dispatch(setConversation(convo));
   };
 
   const addConversation = () => {
@@ -36,19 +56,22 @@ const SidebarChat = () => {
         toastOptions
       );
     } else {
-      setConversations([...conversations, modalInput]);
-      // fetch("http://localhost:8080/conversations/create", {
-      //   method: "POST",
-      //   body: JSON.stringify({
-      //     user,
-      //     modalInput,
-      //   }),
-      //   mode: "cors",
-      //   credentials: "include",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // });
+      fetch("http://localhost:8080/users/create/conversation", {
+        method: "POST",
+        body: JSON.stringify({
+          id,
+          conversation: modalInput,
+        }),
+        mode: "cors",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setConversations(data.conversations);
+        });
     }
   };
 
@@ -64,23 +87,38 @@ const SidebarChat = () => {
         </IconButton>
       </div>
       <div className="sidebar-chat">
-        <div
-          style={{
-            height: "40px",
-            width: "40px",
-            borderRadius: "10px",
-            backgroundColor: "lightgrey",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "black",
-          }}
-        >
-          #
-        </div>
-        <div className="sidebar-chat__info">
-          <h5>Contractors</h5>
-        </div>
+        {conversations.map((convo, i) => (
+          <div
+            className="conversation-container"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+              padding: "10px",
+            }}
+            onClick={() => switchConversation(convo)}
+            key={i}
+          >
+            <div
+              style={{
+                height: "40px",
+                width: "40px",
+                borderRadius: "10px",
+                backgroundColor: "lightgrey",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                color: "black",
+              }}
+              key={i + 1}
+            >
+              #
+            </div>
+            <div key={i + 3} className="sidebar-chat__info">
+              <h5>{convo}</h5>
+            </div>
+          </div>
+        ))}
       </div>
       <br />
 
@@ -124,40 +162,9 @@ const SidebarChat = () => {
                   <datalist id="conversations">
                     <option value="Internet Explorer" />
                   </datalist>
-                  <IconButton onClick={addConversation}>
-                    <AddCircleOutlineIcon />
-                  </IconButton>
                 </form>
               </div>
             </div>
-            <div className="conversation-container">
-              {conversations.map((convo, i) => {
-                return (
-                  <>
-                    <span
-                      key={i}
-                      style={{
-                        color: "white",
-                        backgroundColor: "lightgrey",
-                        borderRadius: "5px",
-                        width: "fit-content",
-                        padding: "5px",
-                        marginRight: "10px",
-                        display: "inline-block",
-                      }}
-                    >
-                      # {convo}
-                      <ClearIcon
-                        onClick={() => deleteConversation(convo)}
-                        key={i + 1}
-                        style={{ color: "white" }}
-                      />
-                    </span>
-                  </>
-                );
-              })}
-            </div>
-
             <div className="modal-footer">
               <button
                 type="button"
@@ -170,8 +177,9 @@ const SidebarChat = () => {
                 type="button"
                 className="btn btn-primary"
                 data-bs-dismiss="modal"
+                onClick={addConversation}
               >
-                Save changes
+                Add
               </button>
             </div>
           </div>

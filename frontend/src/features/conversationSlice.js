@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  conversation: "contractors",
+  conversation: "Contractors",
   memebers: [],
 };
 
@@ -10,10 +10,7 @@ export const conversationSlice = createSlice({
   initialState,
   reducers: {
     setConversation: (state, { payload }) => {
-      state.conversation = payload.conversation;
-    },
-    addConverstion: (state, { payload }) => {
-      state.members.push(payload);
+      state.conversation = payload;
     },
   },
 });

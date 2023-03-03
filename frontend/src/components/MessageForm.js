@@ -4,16 +4,23 @@ import AttachFileIcon from "@material-ui/icons/AttachFile";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 import MicIcon from "@material-ui/icons/Mic";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "../styles/message-form.css";
+import { io } from "socket.io-client";
 
-const MessageForm = ({ messages }) => {
+const MessageForm = ({ messages, setMessages }) => {
   const [input, setInput] = useState("");
 
   const state = useSelector((state) => state);
   const conversation = state.conversation;
   const user = state.user;
+  const socket = io("http://localhost:8080");
+
+  useEffect(() => {
+    const body = document.getElementById("chat__body");
+    body.scrollTop = body.scrollHeight;
+  }, [messages, conversation]);
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -31,7 +38,11 @@ const MessageForm = ({ messages }) => {
         "Content-Type": "application/json",
       },
     })
-      .then((res) => console.log(res))
+      .then((res) => res.json())
+      .then((message) => {
+        socket.emit("send-message", message);
+        setMessages([...messages, message]);
+      })
       .catch((err) => console.log(err));
   };
   return (
@@ -53,7 +64,7 @@ const MessageForm = ({ messages }) => {
             #
           </div>
           <div className="chat__header-info">
-            <h3> Contractors</h3>
+            <h3>{state.conversation.conversation}</h3>
           </div>
           <div className="chat__header-right">
             <IconButton>
@@ -67,7 +78,7 @@ const MessageForm = ({ messages }) => {
             </IconButton>
           </div>
         </div>
-        <div className="chat__body">
+        <div className="chat__body" id="chat__body">
           {messages?.map((message, i) => {
             return (
               <p
@@ -98,8 +109,12 @@ const MessageForm = ({ messages }) => {
             />
             <button
               onClick={sendMessage}
-              style={{ marginLeft: "10px" }}
-              type="submit"
+              style={{
+                marginLeft: "10px",
+                backgroundColor: "white",
+                border: "none",
+              }}
+              type="button"
             >
               Send a message
             </button>

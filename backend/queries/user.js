@@ -8,4 +8,16 @@ const getUserById = (id) => {
   return User.find({ _id: id });
 };
 
-module.exports = { createUser, getUserById };
+const addConversation = (id, converation) => {
+  return User.findOneAndUpdate(
+    { _id: id },
+    { $push: { conversations: converation } },
+    { returnOriginal: false }
+  );
+};
+
+const getConversations = (id) => {
+  return User.find({ _id: id }).select("conversations");
+};
+
+module.exports = { createUser, getUserById, addConversation, getConversations };

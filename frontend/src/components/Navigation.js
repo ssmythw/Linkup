@@ -1,8 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/js/src/collapse.js";
+import Cookies from "js-cookie";
 
 const Navigation = () => {
+  const id = Cookies.get("user_id");
+
+  const logout = () => {};
+
   return (
     <nav
       style={{ zIndex: 1 }}
@@ -26,14 +31,15 @@ const Navigation = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="/login">
-                Login
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/chat">
-                Chat
-              </Link>
+              {id ? (
+                <Link className="nav-link" to="/home" onClick={logout}>
+                  Logout
+                </Link>
+              ) : (
+                <Link className="nav-link" to="/home">
+                  Login
+                </Link>
+              )}
             </li>
           </ul>
         </div>

@@ -1,7 +1,10 @@
 .sidebar-chat {
   display: flex;
   align-items: center;
+  flex-direction: column;
+  justify-content: center;
   cursor: pointer;
+  gap: 15px;
   padding: 10px;
 }
 
@@ -24,10 +27,6 @@
   color: white;
 }
 
-.sidebar-chat:hover {
-  background-color: grey;
-}
-
 .modal-body__container {
   display: flex;
   justify-content: space-between;
@@ -42,10 +41,6 @@
   color: black;
 }
 
-.conversation-container {
-  display: flex;
-  gap: 5px;
-  margin-bottom: 10px;
-  margin-left: 10px;
-  flex-wrap: wrap;
+.conversation-container:hover {
+  background-color: grey;
 }

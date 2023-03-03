@@ -3,20 +3,21 @@ import Sidebar from "../components/Sidebar";
 import MessageForm from "../components/MessageForm";
 import "../styles/chat.css";
 import { useState } from "react";
-import Pusher from "pusher-js";
-import Cookies from "js-cookie";
 import { useSelector, useDispatch } from "react-redux";
+import { io } from "socket.io-client";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
 
   const conversationState = useSelector((state) => state.conversation);
   const conversation = conversationState.conversation;
-
-  //get all the messages for the current conversation
-
+  const socket = io("http://localhost:8080");
+  socket.on("receive-message", (message) => {
+    setMessages([...messages, message]);
+  });
   useEffect(() => {
-    fetch("http://localhost:8080/messages/sync", {
+    // get all the messages for the current conversation
+    fetch("http://localhost:8080/messages", {
       method: "POST",
       body: JSON.stringify({
         conversation,
@@ -27,33 +28,17 @@ const Chat = () => {
         "Content-Type": "application/json",
       },
     })
-      .then((messages) => messages.json())
-      .then((data) => {
-        setMessages(data);
+      .then((res) => res.json())
+      .then((messages) => {
+        setMessages(messages);
       });
-  }, []);
-
-  useEffect(() => {
-    const pusher = new Pusher("8897d49bca636ec4a9cd", {
-      cluster: "us2",
-    });
-
-    const channel = pusher.subscribe("messages");
-    channel.bind("inserted", function (data) {
-      setMessages([...messages, data]);
-    });
-
-    return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
-    };
-  }, [messages]);
+  }, [conversation]);
 
   return (
     <div className="app">
       <div className="app__body">
         <Sidebar />
-        <MessageForm messages={messages} />
+        <MessageForm messages={messages} setMessages={setMessages} />
       </div>
     </div>
   );
