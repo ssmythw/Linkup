@@ -4,6 +4,7 @@ const initialState = {
   username: "",
   email: "",
   image: "",
+  conversations: "",
 };
 
 export const userSlice = createSlice({
@@ -14,9 +15,13 @@ export const userSlice = createSlice({
       state.username = payload.username;
       state.email = payload.email;
       state.image = payload.image;
+      state.conversations = [];
+    },
+    setUserConversations: (state, { payload }) => {
+      state.conversations = payload;
     },
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, setUserConversations } = userSlice.actions;
 export default userSlice.reducer;

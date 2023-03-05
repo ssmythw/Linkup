@@ -7,15 +7,20 @@ import MicIcon from "@material-ui/icons/Mic";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "../styles/message-form.css";
-import { io } from "socket.io-client";
+import EmojiPicker from "emoji-picker-react";
 
-const MessageForm = ({ messages, setMessages }) => {
+const MessageForm = ({ messages, setMessages, socket }) => {
   const [input, setInput] = useState("");
+  const [showPicker, setShowPicker] = useState(false);
 
   const state = useSelector((state) => state);
   const conversation = state.conversation;
   const user = state.user;
-  const socket = io("http://localhost:8080");
+
+  const onEmojiClick = (emojiClickData, mouseEvent) => {
+    setInput(input + emojiClickData.emoji);
+    setShowPicker(false);
+  };
 
   useEffect(() => {
     const body = document.getElementById("chat__body");
@@ -24,13 +29,19 @@ const MessageForm = ({ messages, setMessages }) => {
 
   const sendMessage = (e) => {
     e.preventDefault();
+    if (input === "") {
+      return;
+    }
     fetch("http://localhost:8080/messages/create", {
       method: "POST",
       body: JSON.stringify({
         username: user.username,
         message: input,
         conversation: conversation.conversation,
-        timestamp: new Date().toLocaleDateString,
+        timestamp:
+          new Date().toLocaleTimeString() +
+          " " +
+          new Date().toLocaleDateString(),
       }),
       mode: "cors",
       credentials: "include",
@@ -42,6 +53,7 @@ const MessageForm = ({ messages, setMessages }) => {
       .then((message) => {
         socket.emit("send-message", message);
         setMessages([...messages, message]);
+        setInput("");
       })
       .catch((err) => console.log(err));
   };
@@ -99,27 +111,42 @@ const MessageForm = ({ messages, setMessages }) => {
           })}
         </div>
         <div className="chat__footer">
-          <InsertEmoticonIcon style={{ marginRight: "10px" }} />
-          <form>
+          {showPicker && (
+            <div style={{ transform: "translateY(-200px)" }}>
+              <EmojiPicker
+                emojiStyle="native"
+                onEmojiClick={onEmojiClick}
+              ></EmojiPicker>
+            </div>
+          )}
+
+          <IconButton onClick={() => setShowPicker((val) => !val)}>
+            <InsertEmoticonIcon
+              style={{ marginLeft: "10px", marginRight: "10px" }}
+            />{" "}
+          </IconButton>
+
+          <form onSubmit={sendMessage}>
             <input
+              id="messageInput"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type a message"
               type="text"
             />
             <button
-              onClick={sendMessage}
+              id="sendMessage"
               style={{
                 marginLeft: "10px",
+                marginRight: "10px",
                 backgroundColor: "white",
                 border: "none",
               }}
-              type="button"
+              type="submit"
             >
               Send a message
             </button>
           </form>
-          <MicIcon />
         </div>
       </div>
     </>

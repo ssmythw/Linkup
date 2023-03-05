@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import "../styles/login-register.css";
+import "react-toastify/dist/ReactToastify.css";
 import image from "../assets/login-image.jpg";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 const Login = () => {
   const [values, setValues] = useState({
     username: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   const toastOptions = {
     position: "bottom-center",
@@ -23,6 +26,27 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (handleValidation()) {
+      fetch("http://localhost:8080/users/login", {
+        method: "POST",
+        body: JSON.stringify({
+          username: values.username,
+          password: values.password,
+        }),
+        mode: "cors",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data.status === 500) {
+            toast.error(data.error, toastOptions);
+          } else {
+            navigate("/chat");
+          }
+        });
     }
   };
 
@@ -77,7 +101,7 @@ const Login = () => {
                 type="password"
                 className="form-control"
                 aria-describedby="emailHelp"
-                placeholder="Username"
+                placeholder="Password"
                 onChange={(e) => handleChange(e)}
               />
             </div>
@@ -85,6 +109,7 @@ const Login = () => {
               style={{ width: "300px", margin: "15px auto" }}
               type="submit"
               className="btn btn-primary"
+              onClick={handleSubmit}
             >
               Submit
             </button>
@@ -95,6 +120,7 @@ const Login = () => {
         </div>
         <img className="login-image" src={image} alt="" />
       </div>
+      <ToastContainer></ToastContainer>
     </div>
   );
 };

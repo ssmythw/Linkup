@@ -2,11 +2,24 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/js/src/collapse.js";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const Navigation = () => {
   const id = Cookies.get("user_id");
+  const navigate = useNavigate();
 
-  const logout = () => {};
+  const logout = () => {
+    fetch("http://localhost:8080/users/logout", {
+      method: "GET",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(() => {
+      navigate("/");
+    });
+  };
 
   return (
     <nav
@@ -32,11 +45,11 @@ const Navigation = () => {
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
               {id ? (
-                <Link className="nav-link" to="/home" onClick={logout}>
+                <Link className="nav-link" onClick={logout}>
                   Logout
                 </Link>
               ) : (
-                <Link className="nav-link" to="/home">
+                <Link className="nav-link" to="/login">
                   Login
                 </Link>
               )}

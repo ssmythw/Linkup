@@ -8,8 +8,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { setConversation } from "../features/conversationSlice";
+import { setUserConversations } from "../features/userSlice";
+import CloseIcon from "@material-ui/icons/Close";
 
-const SidebarChat = () => {
+const SidebarChat = ({ search }) => {
   const [modalInput, setModalInput] = useState("");
   const [conversations, setConversations] = useState([]);
 
@@ -41,12 +43,32 @@ const SidebarChat = () => {
     })
       .then((res) => res.json())
       .then((convos) => {
+        dispatch(setUserConversations(convos));
         setConversations(convos);
       });
-  });
+  }, []);
 
   const switchConversation = (convo) => {
     dispatch(setConversation(convo));
+  };
+
+  const deleteConversation = (convo) => {
+    fetch("http://localhost:8080/users/delete/conversation", {
+      method: "DELETE",
+      body: JSON.stringify({
+        id,
+        conversation: convo,
+      }),
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setConversations(data.conversations);
+      });
   };
 
   const addConversation = () => {
@@ -87,38 +109,50 @@ const SidebarChat = () => {
         </IconButton>
       </div>
       <div className="sidebar-chat">
-        {conversations.map((convo, i) => (
-          <div
-            className="conversation-container"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              width: "100%",
-              padding: "10px",
-            }}
-            onClick={() => switchConversation(convo)}
-            key={i}
-          >
+        {conversations
+          .filter((item) => {
+            return search.toLowerCase() === ""
+              ? item
+              : item.toLowerCase().includes(search);
+          })
+          .map((convo, i) => (
             <div
+              className="conversation-container"
               style={{
-                height: "40px",
-                width: "40px",
-                borderRadius: "10px",
-                backgroundColor: "lightgrey",
                 display: "flex",
-                justifyContent: "center",
                 alignItems: "center",
-                color: "black",
+                width: "100%",
+                padding: "10px",
               }}
-              key={i + 1}
+              onClick={() => switchConversation(convo)}
+              key={i}
             >
-              #
+              <div
+                style={{
+                  height: "40px",
+                  width: "40px",
+                  borderRadius: "10px",
+                  backgroundColor: "lightgrey",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  color: "black",
+                }}
+                key={i + 1}
+              >
+                #
+              </div>
+              <div key={i + 3} className="sidebar-chat__info">
+                <h5>{convo}</h5>
+              </div>
+              <IconButton
+                style={{ color: "white", marginLeft: "auto" }}
+                onClick={() => deleteConversation(convo)}
+              >
+                <CloseIcon style={{ fontSize: "14px" }}></CloseIcon>
+              </IconButton>
             </div>
-            <div key={i + 3} className="sidebar-chat__info">
-              <h5>{convo}</h5>
-            </div>
-          </div>
-        ))}
+          ))}
       </div>
       <br />
 

@@ -5,30 +5,17 @@ import Chat from "./pages/Chat";
 import Navigation from "./components/Navigation";
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
-import { useEffect } from "react";
-import Cookies from "js-cookie";
-import { setUser } from "./features/userSlice";
-import { useSelector, useDispatch } from "react-redux";
+import { io } from "socket.io-client";
+import { useEffect, useState } from "react";
 
 function App() {
-  const userId = Cookies.get("user_id");
-  const dispatch = useDispatch();
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    //check if user exists in db
-    //if user exists then populate the user state with that user
-    fetch(`http://localhost:8080/users/${userId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        dispatch(
-          setUser({
-            username: data.username,
-            email: data.email,
-            image: data.image,
-          })
-        );
-      });
-  });
+    const newSocket = io("http://localhost:8080");
+    setSocket(newSocket);
+    return () => newSocket.close();
+  }, [setSocket]);
 
   return (
     <BrowserRouter>
@@ -36,7 +23,7 @@ function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/chat" element={<Chat />} />
+        <Route path="/chat" element={<Chat socket={socket} />} />
         <Route path="/" element={<Home />} />
       </Routes>
       <Footer />

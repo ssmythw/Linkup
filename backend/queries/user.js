@@ -8,6 +8,10 @@ const getUserById = (id) => {
   return User.find({ _id: id });
 };
 
+const getUserByUsername = (username) => {
+  return User.find({ username: username });
+};
+
 const addConversation = (id, converation) => {
   return User.findOneAndUpdate(
     { _id: id },
@@ -16,8 +20,23 @@ const addConversation = (id, converation) => {
   );
 };
 
+const deleteConversation = (id, conversation) => {
+  return User.findByIdAndUpdate(
+    { _id: id },
+    { $pull: { conversations: conversation } },
+    { new: true }
+  );
+};
+
 const getConversations = (id) => {
   return User.find({ _id: id }).select("conversations");
 };
 
-module.exports = { createUser, getUserById, addConversation, getConversations };
+module.exports = {
+  createUser,
+  getUserById,
+  addConversation,
+  getConversations,
+  getUserByUsername,
+  deleteConversation,
+};

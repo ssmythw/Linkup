@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/sidebar.css";
 import ChatIcon from "@material-ui/icons/Chat";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -8,8 +8,13 @@ import SidebarChat from "./SidebarChat";
 import { useSelector } from "react-redux";
 
 const Sidebar = () => {
+  const [search, setSearch] = useState("");
   const state = useSelector((state) => state);
   const user = state.user;
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
 
   return (
     <div className="sidebar">
@@ -27,11 +32,16 @@ const Sidebar = () => {
       <div className="sidebar__search">
         <div className="sidebar__search-container">
           <SearchIcon />
-          <input placeholder="Search" type="text" />
+          <input
+            placeholder="Search"
+            type="text"
+            value={search}
+            onChange={(e) => handleSearch(e)}
+          />
         </div>
       </div>
       <div className="sidebar__chats">
-        <SidebarChat />
+        <SidebarChat search={search} />
       </div>
     </div>
   );
