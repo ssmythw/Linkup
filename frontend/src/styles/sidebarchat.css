@@ -31,6 +31,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 15px;
 }
 
 .modal-body__form input {
@@ -43,4 +44,23 @@
 
 .conversation-container:hover {
   background-color: grey;
+}
+
+.convoTab {
+  height: 20px;
+  width: fit-content;
+  background-color: grey;
+  color: white;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.convoTabContainer {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 10px;
 }

@@ -1,11 +1,7 @@
-import { Avatar, IconButton } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
-import AttachFileIcon from "@material-ui/icons/AttachFile";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import { IconButton } from "@material-ui/core";
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
-import MicIcon from "@material-ui/icons/Mic";
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import "../styles/message-form.css";
 import EmojiPicker from "emoji-picker-react";
 
@@ -20,6 +16,10 @@ const MessageForm = ({ messages, setMessages, socket }) => {
   const onEmojiClick = (emojiClickData, mouseEvent) => {
     setInput(input + emojiClickData.emoji);
     setShowPicker(false);
+  };
+
+  String.prototype.capitalizeFirstLetter = function () {
+    return this.charAt(0).toUpperCase() + this.slice(1);
   };
 
   useEffect(() => {
@@ -76,19 +76,9 @@ const MessageForm = ({ messages, setMessages, socket }) => {
             #
           </div>
           <div className="chat__header-info">
-            <h3>{state.conversation.conversation}</h3>
+            <h3>{state.conversation.conversation.capitalizeFirstLetter()}</h3>
           </div>
-          <div className="chat__header-right">
-            <IconButton>
-              <SearchIcon />
-            </IconButton>
-            <IconButton>
-              <AttachFileIcon />
-            </IconButton>
-            <IconButton>
-              <MoreVertIcon />
-            </IconButton>
-          </div>
+          <div className="chat__header-right"></div>
         </div>
         <div className="chat__body" id="chat__body">
           {messages?.map((message, i) => {

@@ -1,9 +1,18 @@
-import Conversation from "../models/conversation";
+const Conversation = require("../models/conversation");
 
-const createConversation = (name, newMember) => {
-  return Conversation.create({ name: name }, { $push: { members: newMember } });
+const createConversation = (name) => {
+  return Conversation.create({ name: name });
 };
 
 const getAllConversations = () => {
   return Conversation.find({});
 };
+
+const addNewMember = (name, newMember) => {
+  return Conversation.findOneAndUpdate(
+    { name: name },
+    { $push: { members: newMember } }
+  );
+};
+
+module.exports = { createConversation, getAllConversations, addNewMember };

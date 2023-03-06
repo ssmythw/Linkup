@@ -20,14 +20,7 @@ const Sidebar = () => {
     <div className="sidebar">
       <div className="sidebar__header">
         <Avatar src={user.image} />
-        <div className="sidebar__headerRight">
-          <IconButton>
-            <ChatIcon />
-          </IconButton>
-          <IconButton>
-            <MoreVertIcon />
-          </IconButton>
-        </div>
+        <div className="sidebar__headerRight"></div>
       </div>
       <div className="sidebar__search">
         <div className="sidebar__search-container">

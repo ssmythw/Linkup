@@ -18,7 +18,7 @@ const Chat = ({ socket }) => {
 
   useEffect(() => {
     if (socket !== null) {
-      socket.on("receive-message", (message) => {
+      socket.on("received-message", (message) => {
         if (user.conversations.includes(message.conversation)) {
           setMessages([...messages, message]);
         }
@@ -40,7 +40,7 @@ const Chat = ({ socket }) => {
           })
         );
       });
-  });
+  }, []);
 
   useEffect(() => {
     // get all the messages for the current conversation

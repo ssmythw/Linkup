@@ -112,7 +112,7 @@ const Register = () => {
   return (
     <div className="container">
       {" "}
-      <div className="login-container">
+      <div className="login-container" style={{ textAlign: "center" }}>
         <div className="login">
           <h1 style={{ marginBottom: "10px" }}>Register For Your Account</h1>
           <h4 style={{ color: "grey" }}>Register using Social Media</h4>

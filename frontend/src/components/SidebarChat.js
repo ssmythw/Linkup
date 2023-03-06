@@ -1,4 +1,3 @@
-import { Avatar } from "@material-ui/core";
 import React, { useEffect, useRef, useState } from "react";
 import "../styles/sidebarchat.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,6 +13,7 @@ import CloseIcon from "@material-ui/icons/Close";
 const SidebarChat = ({ search }) => {
   const [modalInput, setModalInput] = useState("");
   const [conversations, setConversations] = useState([]);
+  const [globalConversations, setGlobalConversations] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -21,6 +21,10 @@ const SidebarChat = ({ search }) => {
 
   const state = useSelector((state) => state);
   const user = state.user;
+
+  String.prototype.capitalizeFirstLetter = function () {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  };
 
   const toastOptions = {
     position: "bottom-center",
@@ -48,8 +52,28 @@ const SidebarChat = ({ search }) => {
       });
   }, []);
 
+  useEffect(() => {
+    fetch("http://localhost:8080/conversations", {
+      method: "GET",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((allConversations) => {
+        setGlobalConversations(allConversations);
+        console.log(globalConversations);
+      });
+  }, []);
+
   const switchConversation = (convo) => {
     dispatch(setConversation(convo));
+  };
+
+  const setInputConversation = (convo) => {
+    setModalInput(convo);
   };
 
   const deleteConversation = (convo) => {
@@ -71,30 +95,24 @@ const SidebarChat = ({ search }) => {
       });
   };
 
-  const addConversation = () => {
-    if (modalInput === "" || modalInput.length < 3) {
-      toast.error(
-        "Conversation field cannnot be blank and must be at least 3 characters long.",
-        toastOptions
-      );
-    } else {
-      fetch("http://localhost:8080/users/create/conversation", {
-        method: "POST",
-        body: JSON.stringify({
-          id,
-          conversation: modalInput,
-        }),
-        mode: "cors",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setConversations(data.conversations);
-        });
-    }
+  const addConversation = (convo) => {
+    fetch("http://localhost:8080/users/create/conversation", {
+      method: "POST",
+      body: JSON.stringify({
+        id,
+        conversation: modalInput.capitalizeFirstLetter(),
+      }),
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setConversations(data.conversations);
+        setModalInput("");
+      });
   };
 
   return (
@@ -143,7 +161,7 @@ const SidebarChat = ({ search }) => {
                 #
               </div>
               <div key={i + 3} className="sidebar-chat__info">
-                <h5>{convo}</h5>
+                <h5>{convo.capitalizeFirstLetter()}</h5>
               </div>
               <IconButton
                 style={{ color: "white", marginLeft: "auto" }}
@@ -179,24 +197,39 @@ const SidebarChat = ({ search }) => {
             <div className="modal-body">
               <div className="modal-body__container">
                 <form
+                  autoComplete="off"
                   style={{
                     width: "100%",
                     display: "flex",
                     justifyContent: "space-between",
                   }}
                   className="modal-body__form"
-                  action="/action_page.php"
                 >
                   <input
                     value={modalInput}
                     onChange={(e) => setModalInput(e.target.value)}
-                    list="conversations"
                     name="conversations"
                   />
-                  <datalist id="conversations">
-                    <option value="Internet Explorer" />
-                  </datalist>
                 </form>
+              </div>
+              <div className="convoTabContainer">
+                {globalConversations
+                  .filter((item) => {
+                    return modalInput.toLowerCase() === ""
+                      ? ""
+                      : item.name.toLowerCase().includes(modalInput);
+                  })
+                  .map((conversation, i) => {
+                    return (
+                      <span
+                        key={i}
+                        onClick={() => setInputConversation(conversation.name)}
+                        className="convoTab"
+                      >
+                        # {conversation.name}
+                      </span>
+                    );
+                  })}
               </div>
             </div>
             <div className="modal-footer">
@@ -204,6 +237,7 @@ const SidebarChat = ({ search }) => {
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
+                onClick={() => setModalInput("")}
               >
                 Close
               </button>

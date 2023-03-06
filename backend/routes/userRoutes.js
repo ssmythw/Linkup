@@ -37,7 +37,7 @@ router.post("/login", (req, res) => {
 
 router.get("/logout", (req, res) => {
   res.clearCookie("user_id");
-  res.end();
+  res.status(200).json({ message: "Cookie has been deleted." });
 });
 
 router.post("/create", (req, res) => {

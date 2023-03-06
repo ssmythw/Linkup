@@ -12,7 +12,7 @@ const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   cors: {
-    origin: ["http://localhost:3000"],
+    origin: ["*"],
   },
 });
 //middleware
@@ -27,6 +27,7 @@ app.use(cookieParser());
 //middleware routes
 app.use("/messages", messageRoutes);
 app.use("/users", userRoutes);
+app.use("/conversations", conversationRoutes);
 
 //db connection
 mongoose.set("strictQuery", false);
@@ -36,6 +37,17 @@ mongoose.connect(process.env.MONGO_URL, {
 });
 
 io.on("connection", (socket) => {
+  console.log(socket.id, "connected");
+  socket.emit("me", socket.id);
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("call ended");
+  });
+  socket.on("calluser", ({ userToCall, signalData, from, name }) => {
+    io.to(userToCall).emit("calluser", { signal: signalData, from, name });
+  });
+  socket.on("answercall", (data) => [
+    io.to(data.to).emit("callaccepted", data.signal),
+  ]);
   socket.on("send-message", (message) => {
     socket.broadcast.emit("received-message", message);
   });
