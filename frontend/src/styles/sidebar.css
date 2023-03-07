@@ -9,7 +9,7 @@
 
 .sidebar__header {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   padding: 10px;
 }
 
@@ -30,7 +30,6 @@
   align-items: center;
   height: 49px;
   padding: 10px;
-  margin-bottom: 20px;
 }
 
 .sidebar__search-container {

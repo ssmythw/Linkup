@@ -93,3 +93,7 @@
 .chat__footer .MuiSvgIcon-root {
   font-size: 2.5rem;
 }
+
+.show-friends {
+  display: block !important;
+}

@@ -1,0 +1,28 @@
+.friends {
+  height: 100%;
+  width: 350px;
+  border-left: 1px solid black;
+  background-color: rgb(97, 97, 97);
+  color: white;
+}
+
+.friends__header {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 89px;
+  flex: 1 1;
+}
+
+.friends__header__left {
+  display: flex;
+  flex-grow: 1;
+  gap: 10px;
+}
+
+.friends__header__left .MuiSvgIcon-root,
+.friends__header__right .MuiSvgIcon-root {
+  font-size: 2rem;
+  color: white;
+}

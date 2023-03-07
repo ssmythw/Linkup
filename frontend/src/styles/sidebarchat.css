@@ -64,3 +64,24 @@
   flex-wrap: wrap;
   gap: 10px;
 }
+
+.coversation-header {
+  display: flex;
+  justify-content: center;
+}
+
+.show-friends {
+  display: block;
+}
+
+.hide-friends {
+  display: none;
+}
+
+.show-channels {
+  display: block;
+}
+
+.hide-channels {
+  display: none;
+}

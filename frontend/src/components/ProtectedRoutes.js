@@ -3,5 +3,5 @@ import Cookies from "js-cookie";
 
 export default function ProtectedRoutes() {
   const id = Cookies.get("user_id");
-  return id ? <Outlet /> : <Navigate to="/" />;
+  return id ? <Outlet /> : <Navigate to="/login" />;
 }

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
@@ -8,7 +8,6 @@ import Footer from "./components/Footer";
 import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
 import ProtectedRoutes from "./components/ProtectedRoutes";
-import VideoChat from "./pages/VideoChat";
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -27,12 +26,11 @@ function App() {
       <Routes>
         <Route element={<ProtectedRoutes />}>
           <Route exact path="/chat" element={<Chat socket={socket} />} />
-          <Route exact path="/video-chat" element={<VideoChat />} />
         </Route>
-        <Route exact path="/register" element={<Register />} />
-        <Route exact path="/login" element={<Login />} />
-        <Route exact path="/" element={<Home />} />
-        <Route path="*" component={<Home />} />
+        <Route path="*" element={<Navigate to={"/"} />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Home />} />
       </Routes>
       <Footer />
     </BrowserRouter>

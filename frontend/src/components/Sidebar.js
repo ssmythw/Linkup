@@ -20,6 +20,7 @@ const Sidebar = () => {
     <div className="sidebar">
       <div className="sidebar__header">
         <Avatar src={user.image} />
+        {user.username}
         <div className="sidebar__headerRight"></div>
       </div>
       <div className="sidebar__search">

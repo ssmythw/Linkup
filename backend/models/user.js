@@ -22,6 +22,9 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  friends: {
+    type: Array,
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);

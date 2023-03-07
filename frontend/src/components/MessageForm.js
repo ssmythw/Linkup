@@ -1,9 +1,10 @@
-import { IconButton } from "@material-ui/core";
+import { Icon, IconButton } from "@material-ui/core";
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "../styles/message-form.css";
 import EmojiPicker from "emoji-picker-react";
+import PeopleIcon from "@material-ui/icons/People";
 
 const MessageForm = ({ messages, setMessages, socket }) => {
   const [input, setInput] = useState("");
@@ -78,7 +79,6 @@ const MessageForm = ({ messages, setMessages, socket }) => {
           <div className="chat__header-info">
             <h3>{state.conversation.conversation.capitalizeFirstLetter()}</h3>
           </div>
-          <div className="chat__header-right"></div>
         </div>
         <div className="chat__body" id="chat__body">
           {messages?.map((message, i) => {

@@ -9,11 +9,14 @@ import Cookies from "js-cookie";
 import { setConversation } from "../features/conversationSlice";
 import { setUserConversations } from "../features/userSlice";
 import CloseIcon from "@material-ui/icons/Close";
+import ForumIcon from "@material-ui/icons/Forum";
+import GroupIcon from "@material-ui/icons/Group";
 
 const SidebarChat = ({ search }) => {
   const [modalInput, setModalInput] = useState("");
   const [conversations, setConversations] = useState([]);
   const [globalConversations, setGlobalConversations] = useState([]);
+  const [listType, setListType] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -24,6 +27,11 @@ const SidebarChat = ({ search }) => {
 
   String.prototype.capitalizeFirstLetter = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
+  };
+
+  const switchListType = () => {
+    console.log("here");
+    setListType(!listType);
   };
 
   const toastOptions = {
@@ -117,138 +125,243 @@ const SidebarChat = ({ search }) => {
 
   return (
     <>
-      <div className="title-header">
-        <h4 style={{ marginLeft: "10px" }}>Conversations</h4>
-        <IconButton>
-          <AddCircleOutlineIcon
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-          />
+      <div className="coversation-header">
+        <IconButton onClick={switchListType}>
+          <ForumIcon />
+        </IconButton>
+        <IconButton onClick={switchListType}>
+          <GroupIcon />
         </IconButton>
       </div>
-      <div className="sidebar-chat">
-        {conversations
-          .filter((item) => {
-            return search.toLowerCase() === ""
-              ? item
-              : item.toLowerCase().includes(search);
-          })
-          .map((convo, i) => (
-            <div
-              className="conversation-container"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                width: "100%",
-                padding: "10px",
-              }}
-              onClick={() => switchConversation(convo)}
-              key={i}
-            >
-              <div
-                style={{
-                  height: "40px",
-                  width: "40px",
-                  borderRadius: "10px",
-                  backgroundColor: "lightgrey",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  color: "black",
-                }}
-                key={i + 1}
-              >
-                #
-              </div>
-              <div key={i + 3} className="sidebar-chat__info">
-                <h5>{convo.capitalizeFirstLetter()}</h5>
-              </div>
-              <IconButton
-                style={{ color: "white", marginLeft: "auto" }}
-                onClick={() => deleteConversation(convo)}
-              >
-                <CloseIcon style={{ fontSize: "14px" }}></CloseIcon>
-              </IconButton>
-            </div>
-          ))}
-      </div>
-      <br />
-
-      <div
-        className="modal fade"
-        id="exampleModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Add a Conversation
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <div className="modal-body__container">
-                <form
-                  autoComplete="off"
+      <div className="channels">
+        <div className={listType ? "hide-channels" : "show-channels"}>
+          <div className="title-header">
+            <h4 style={{ marginLeft: "10px" }}>Conversations</h4>
+            <IconButton>
+              <AddCircleOutlineIcon
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+              />
+            </IconButton>
+          </div>
+          <div className="sidebar-chat">
+            {conversations
+              .filter((item) => {
+                return search.toLowerCase() === ""
+                  ? item
+                  : item.toLowerCase().includes(search);
+              })
+              .map((convo, i) => (
+                <div
+                  className="conversation-container"
                   style={{
-                    width: "100%",
                     display: "flex",
-                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    padding: "10px",
                   }}
-                  className="modal-body__form"
+                  onClick={() => switchConversation(convo)}
+                  key={i}
                 >
-                  <input
-                    value={modalInput}
-                    onChange={(e) => setModalInput(e.target.value)}
-                    name="conversations"
-                  />
-                </form>
-              </div>
-              <div className="convoTabContainer">
-                {globalConversations
-                  .filter((item) => {
-                    return modalInput.toLowerCase() === ""
-                      ? ""
-                      : item.name.toLowerCase().includes(modalInput);
-                  })
-                  .map((conversation, i) => {
-                    return (
-                      <span
-                        key={i}
-                        onClick={() => setInputConversation(conversation.name)}
-                        className="convoTab"
-                      >
-                        # {conversation.name}
-                      </span>
-                    );
-                  })}
+                  <div
+                    style={{
+                      height: "40px",
+                      width: "40px",
+                      borderRadius: "10px",
+                      backgroundColor: "lightgrey",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      color: "black",
+                    }}
+                    key={i + 1}
+                  >
+                    #
+                  </div>
+                  <div key={i + 3} className="sidebar-chat__info">
+                    <h5>{convo.capitalizeFirstLetter()}</h5>
+                  </div>
+                  <IconButton
+                    style={{ color: "white", marginLeft: "auto" }}
+                    onClick={() => deleteConversation(convo)}
+                  >
+                    <CloseIcon style={{ fontSize: "14px" }}></CloseIcon>
+                  </IconButton>
+                </div>
+              ))}
+          </div>
+          <div
+            className="modal fade"
+            id="exampleModal"
+            tabIndex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Add a Conversation
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <div className="modal-body__container">
+                    <form
+                      autoComplete="off"
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                      className="modal-body__form"
+                    >
+                      <input
+                        value={modalInput}
+                        onChange={(e) => setModalInput(e.target.value)}
+                        name="conversations"
+                      />
+                    </form>
+                  </div>
+                  <div className="convoTabContainer">
+                    {globalConversations
+                      .filter((item) => {
+                        return modalInput.toLowerCase() === ""
+                          ? ""
+                          : item.name.toLowerCase().includes(modalInput);
+                      })
+                      .map((conversation, i) => {
+                        return (
+                          <span
+                            key={i}
+                            onClick={() =>
+                              setInputConversation(conversation.name)
+                            }
+                            className="convoTab"
+                          >
+                            # {conversation.name}
+                          </span>
+                        );
+                      })}
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                    onClick={() => setModalInput("")}
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    data-bs-dismiss="modal"
+                    onClick={addConversation}
+                  >
+                    Add
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-                onClick={() => setModalInput("")}
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={addConversation}
-              >
-                Add
-              </button>
+          </div>
+        </div>
+      </div>
+      <div className={listType ? "show-friends" : "hide-friends"}>
+        <div className="title-header">
+          <h4 style={{ marginLeft: "10px" }}>Friends List</h4>
+          <IconButton>
+            <AddCircleOutlineIcon
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal2"
+            />
+          </IconButton>
+        </div>
+        <div className="sidebar-chat"></div>
+        <div
+          className="modal fade"
+          id="exampleModal2"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Add a Conversation
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">
+                <div className="modal-body__container">
+                  <form
+                    autoComplete="off"
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                    className="modal-body__form"
+                  >
+                    <input
+                      value={modalInput}
+                      onChange={(e) => setModalInput(e.target.value)}
+                      name="conversations"
+                    />
+                  </form>
+                </div>
+                <div className="convoTabContainer">
+                  {globalConversations
+                    .filter((item) => {
+                      return modalInput.toLowerCase() === ""
+                        ? ""
+                        : item.name.toLowerCase().includes(modalInput);
+                    })
+                    .map((conversation, i) => {
+                      return (
+                        <span
+                          key={i}
+                          onClick={() =>
+                            setInputConversation(conversation.name)
+                          }
+                          className="convoTab"
+                        >
+                          # {conversation.name}
+                        </span>
+                      );
+                    })}
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                  onClick={() => setModalInput("")}
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={addConversation}
+                >
+                  Add
+                </button>
+              </div>
             </div>
           </div>
         </div>
