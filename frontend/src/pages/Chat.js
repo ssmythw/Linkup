@@ -16,8 +16,6 @@ const Chat = ({ socket }) => {
   const userId = Cookies.get("user_id");
   const dispatch = useDispatch();
 
-  console.log(conversation.conversation);
-
   useEffect(() => {
     if (socket !== null) {
       socket.on("received-message", (message) => {

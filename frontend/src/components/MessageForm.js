@@ -33,6 +33,7 @@ const MessageForm = ({ messages, setMessages, socket }) => {
     if (input === "") {
       return;
     }
+
     fetch("http://localhost:8080/messages/create", {
       method: "POST",
       body: JSON.stringify({

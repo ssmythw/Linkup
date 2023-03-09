@@ -1,5 +1,9 @@
 const User = require("../models/user");
 
+const getAllUsers = () => {
+  return User.find({});
+};
+
 const createUser = (username, email, hash, image) => {
   return User.create({ username, email, password: hash, image });
 };
@@ -32,6 +36,32 @@ const getConversations = (id) => {
   return User.find({ _id: id }).select("conversations");
 };
 
+const addFriend = async (user, recipient) => {
+  console.log(user);
+  console.log(recipient);
+  const update1 = await User.findOneAndUpdate(
+    { username: recipient.username },
+    { $addToSet: { friends: user } }
+  );
+  const update2 = await User.findOneAndUpdate(
+    { username: user.username },
+    { $addToSet: { friends: recipient } }
+  );
+
+  return update2;
+};
+
+const getFriends = (id) => {
+  return User.find({ _id: id }).select("friends");
+};
+
+const hasFriend = (user, recipient) => {
+  return User.find(
+    { username: user.username },
+    { friends: recipient.username }
+  );
+};
+
 module.exports = {
   createUser,
   getUserById,
@@ -39,4 +69,8 @@ module.exports = {
   getConversations,
   getUserByUsername,
   deleteConversation,
+  getAllUsers,
+  addFriend,
+  getFriends,
+  hasFriend,
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../styles/sidebarchat.css";
 import { useSelector, useDispatch } from "react-redux";
-import { IconButton } from "@material-ui/core";
+import { Avatar, IconButton } from "@material-ui/core";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -15,22 +15,25 @@ import GroupIcon from "@material-ui/icons/Group";
 const SidebarChat = ({ search }) => {
   const [modalInput, setModalInput] = useState("");
   const [conversations, setConversations] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [globalUsers, setGlobalUsers] = useState([]);
   const [globalConversations, setGlobalConversations] = useState([]);
   const [listType, setListType] = useState(false);
 
   const dispatch = useDispatch();
 
+  console.log(friends);
+
   const id = Cookies.get("user_id");
 
   const state = useSelector((state) => state);
-  const user = state.user;
+  const userState = state.user;
 
   String.prototype.capitalizeFirstLetter = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
   };
 
   const switchListType = () => {
-    console.log("here");
     setListType(!listType);
   };
 
@@ -61,6 +64,22 @@ const SidebarChat = ({ search }) => {
   }, []);
 
   useEffect(() => {
+    fetch(`http://localhost:8080/users/friends/${id}`, {
+      method: "GET",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((user) => {
+        const friends = user.friends;
+        setFriends(friends);
+      });
+  }, []);
+
+  useEffect(() => {
     fetch("http://localhost:8080/conversations", {
       method: "GET",
       mode: "cors",
@@ -72,7 +91,21 @@ const SidebarChat = ({ search }) => {
       .then((res) => res.json())
       .then((allConversations) => {
         setGlobalConversations(allConversations);
-        console.log(globalConversations);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/users", {
+      method: "GET",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((users) => {
+        setGlobalUsers(users);
       });
   }, []);
 
@@ -121,6 +154,23 @@ const SidebarChat = ({ search }) => {
         setConversations(data.conversations);
         setModalInput("");
       });
+  };
+
+  const addFriend = (recipient) => {
+    fetch("http://localhost:8080/users/friend/add", {
+      method: "POST",
+      body: JSON.stringify({
+        id,
+        recipient: recipient,
+      }),
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {});
   };
 
   return (
@@ -275,7 +325,7 @@ const SidebarChat = ({ search }) => {
       </div>
       <div className={listType ? "show-friends" : "hide-friends"}>
         <div className="title-header">
-          <h4 style={{ marginLeft: "10px" }}>Friends List</h4>
+          <h4 style={{ marginLeft: "10px" }}>Friends</h4>
           <IconButton>
             <AddCircleOutlineIcon
               data-bs-toggle="modal"
@@ -283,7 +333,21 @@ const SidebarChat = ({ search }) => {
             />
           </IconButton>
         </div>
-        <div className="sidebar-chat"></div>
+        <div className="sidebar-chat">
+          {friends
+            .filter((item) => {
+              return search.toLowerCase() === ""
+                ? item
+                : item.toLowerCase().includes(search);
+            })
+            .map((user, i) => {
+              return (
+                <>
+                  <Avatar src={user.image} />
+                </>
+              );
+            })}
+        </div>
         <div
           className="modal fade"
           id="exampleModal2"
@@ -295,7 +359,7 @@ const SidebarChat = ({ search }) => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
-                  Add a Conversation
+                  Add a Friend
                 </h5>
                 <button
                   type="button"
@@ -322,24 +386,31 @@ const SidebarChat = ({ search }) => {
                     />
                   </form>
                 </div>
-                <div className="convoTabContainer">
-                  {globalConversations
+                <div className="friendTabContainer">
+                  {globalUsers
                     .filter((item) => {
                       return modalInput.toLowerCase() === ""
                         ? ""
-                        : item.name.toLowerCase().includes(modalInput);
+                        : item.username.toLowerCase().includes(modalInput);
                     })
-                    .map((conversation, i) => {
+                    .map((user, i) => {
                       return (
-                        <span
-                          key={i}
-                          onClick={() =>
-                            setInputConversation(conversation.name)
-                          }
-                          className="convoTab"
+                        <div
+                          onClick={() => addFriend(user)}
+                          data-bs-dismiss="modal"
+                          className="friend"
+                          style={{
+                            color: "black",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px",
+                            marginBottom: "10px",
+                            padding: "10px",
+                          }}
                         >
-                          # {conversation.name}
-                        </span>
+                          <Avatar src={user.image} />
+                          <span>{user.username}</span>
+                        </div>
                       );
                     })}
                 </div>
@@ -352,14 +423,6 @@ const SidebarChat = ({ search }) => {
                   onClick={() => setModalInput("")}
                 >
                   Close
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  data-bs-dismiss="modal"
-                  onClick={addConversation}
-                >
-                  Add
                 </button>
               </div>
             </div>

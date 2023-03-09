@@ -4,6 +4,8 @@ const messageSchema = mongoose.Schema({
   username: String,
   message: String,
   conversation: String,
+  senderUsername: String,
+  receiverUsername: String,
   timestamp: String,
 });
 

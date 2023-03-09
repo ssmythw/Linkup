@@ -8,7 +8,17 @@ const {
   getConversations,
   getUserByUsername,
   deleteConversation,
+  getAllUsers,
+  addFriend,
+  getFriends,
+  hasFriend,
 } = require("../queries/user");
+
+router.get("/", (req, res) => {
+  getAllUsers().then((response) => {
+    res.status(200).json(response);
+  });
+});
 
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
@@ -82,6 +92,28 @@ router.get("/conversations/:id", (req, res) => {
   const id = req.params.id;
   getConversations(id).then((convos) => {
     res.status(200).json(convos[0].conversations);
+  });
+});
+
+router.post("/friend/add", async (req, res) => {
+  const { id, recipient } = req.body;
+  const arr = await getUserById(id);
+  const user = arr[0];
+  const friend = await hasFriend(user, recipient);
+  if (friend.length === 0) {
+    addFriend(user, recipient).then((response) => {
+      res.status(200).send(response);
+    });
+  } else {
+    res.status(500).json({ error: "User already has this friend." });
+  }
+});
+
+router.get("/friends/:id", (req, res) => {
+  const id = req.params.id;
+  getFriends(id).then((response) => {
+    console.log(response);
+    res.status(200).json(response[0]);
   });
 });
 
