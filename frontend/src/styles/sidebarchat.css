@@ -90,3 +90,7 @@
   background-color: rgb(185, 185, 185);
   cursor: pointer;
 }
+
+.friend-container {
+  display: flex;
+}

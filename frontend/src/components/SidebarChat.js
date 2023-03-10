@@ -18,11 +18,19 @@ const SidebarChat = ({ search }) => {
   const [friends, setFriends] = useState([]);
   const [globalUsers, setGlobalUsers] = useState([]);
   const [globalConversations, setGlobalConversations] = useState([]);
-  const [listType, setListType] = useState(false);
+  const [listTypeFriends, setListTypeFriends] = useState(false);
 
   const dispatch = useDispatch();
 
-  console.log(friends);
+  const toastOptions = {
+    position: "bottom-center",
+    autoClose: 3000,
+    hideProgressBar: false,
+    newestOnTop: true,
+    pauseOnHover: true,
+    draggable: true,
+    theme: "dark",
+  };
 
   const id = Cookies.get("user_id");
 
@@ -33,18 +41,31 @@ const SidebarChat = ({ search }) => {
     return this.charAt(0).toUpperCase() + this.slice(1);
   };
 
-  const switchListType = () => {
-    setListType(!listType);
+  const switchConversation = (convo) => {
+    dispatch(setConversation(convo));
   };
 
-  const toastOptions = {
-    position: "bottom-center",
-    autoClose: 3000,
-    hideProgressBar: false,
-    newestOnTop: true,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "dark",
+  const setInputConversation = (convo) => {
+    setModalInput(convo);
+  };
+
+  const deleteConversation = (convo) => {
+    fetch("http://localhost:8080/users/delete/conversation", {
+      method: "DELETE",
+      body: JSON.stringify({
+        id,
+        conversation: convo,
+      }),
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setConversations(data.conversations);
+      });
   };
 
   useEffect(() => {
@@ -109,33 +130,6 @@ const SidebarChat = ({ search }) => {
       });
   }, []);
 
-  const switchConversation = (convo) => {
-    dispatch(setConversation(convo));
-  };
-
-  const setInputConversation = (convo) => {
-    setModalInput(convo);
-  };
-
-  const deleteConversation = (convo) => {
-    fetch("http://localhost:8080/users/delete/conversation", {
-      method: "DELETE",
-      body: JSON.stringify({
-        id,
-        conversation: convo,
-      }),
-      mode: "cors",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setConversations(data.conversations);
-      });
-  };
-
   const addConversation = (convo) => {
     fetch("http://localhost:8080/users/create/conversation", {
       method: "POST",
@@ -170,21 +164,18 @@ const SidebarChat = ({ search }) => {
       },
     })
       .then((res) => res.json())
-      .then((data) => {});
+      .then((data) => {
+        if (data.error) {
+          toast.error("You have already added this friend.", toastOptions);
+        }
+      });
   };
 
   return (
     <>
-      <div className="coversation-header">
-        <IconButton onClick={switchListType}>
-          <ForumIcon />
-        </IconButton>
-        <IconButton onClick={switchListType}>
-          <GroupIcon />
-        </IconButton>
-      </div>
+      <div className="coversation-header"></div>
       <div className="channels">
-        <div className={listType ? "hide-channels" : "show-channels"}>
+        <div>
           <div className="title-header">
             <h4 style={{ marginLeft: "10px" }}>Conversations</h4>
             <IconButton>
@@ -318,112 +309,6 @@ const SidebarChat = ({ search }) => {
                     Add
                   </button>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className={listType ? "show-friends" : "hide-friends"}>
-        <div className="title-header">
-          <h4 style={{ marginLeft: "10px" }}>Friends</h4>
-          <IconButton>
-            <AddCircleOutlineIcon
-              data-bs-toggle="modal"
-              data-bs-target="#exampleModal2"
-            />
-          </IconButton>
-        </div>
-        <div className="sidebar-chat">
-          {friends
-            .filter((item) => {
-              return search.toLowerCase() === ""
-                ? item
-                : item.toLowerCase().includes(search);
-            })
-            .map((user, i) => {
-              return (
-                <>
-                  <Avatar src={user.image} />
-                </>
-              );
-            })}
-        </div>
-        <div
-          className="modal fade"
-          id="exampleModal2"
-          tabIndex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Add a Friend
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="modal-body__container">
-                  <form
-                    autoComplete="off"
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                    className="modal-body__form"
-                  >
-                    <input
-                      value={modalInput}
-                      onChange={(e) => setModalInput(e.target.value)}
-                      name="conversations"
-                    />
-                  </form>
-                </div>
-                <div className="friendTabContainer">
-                  {globalUsers
-                    .filter((item) => {
-                      return modalInput.toLowerCase() === ""
-                        ? ""
-                        : item.username.toLowerCase().includes(modalInput);
-                    })
-                    .map((user, i) => {
-                      return (
-                        <div
-                          onClick={() => addFriend(user)}
-                          data-bs-dismiss="modal"
-                          className="friend"
-                          style={{
-                            color: "black",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "10px",
-                            marginBottom: "10px",
-                            padding: "10px",
-                          }}
-                        >
-                          <Avatar src={user.image} />
-                          <span>{user.username}</span>
-                        </div>
-                      );
-                    })}
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                  onClick={() => setModalInput("")}
-                >
-                  Close
-                </button>
               </div>
             </div>
           </div>

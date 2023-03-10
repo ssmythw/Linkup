@@ -56,10 +56,7 @@ const getFriends = (id) => {
 };
 
 const hasFriend = (user, recipient) => {
-  return User.find(
-    { username: user.username },
-    { friends: recipient.username }
-  );
+  return User.find({ username: user.username, friends: recipient.usernamec });
 };
 
 module.exports = {

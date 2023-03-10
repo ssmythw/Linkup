@@ -71,6 +71,7 @@ const Register = () => {
           image: data.image,
         })
       );
+      navigate("/chat");
     } catch (err) {
       console.log(err);
     }

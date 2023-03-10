@@ -100,6 +100,7 @@ router.post("/friend/add", async (req, res) => {
   const arr = await getUserById(id);
   const user = arr[0];
   const friend = await hasFriend(user, recipient);
+  console.log(friend);
   if (friend.length === 0) {
     addFriend(user, recipient).then((response) => {
       res.status(200).send(response);
@@ -112,7 +113,6 @@ router.post("/friend/add", async (req, res) => {
 router.get("/friends/:id", (req, res) => {
   const id = req.params.id;
   getFriends(id).then((response) => {
-    console.log(response);
     res.status(200).json(response[0]);
   });
 });
