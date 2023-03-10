@@ -45,9 +45,14 @@ const Navigation = () => {
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
               {id ? (
-                <Link className="nav-link" onClick={logout}>
-                  Logout
-                </Link>
+                <div style={{ display: "Flex" }}>
+                  <Link className="nav-link" to="/chat">
+                    Chat
+                  </Link>
+                  <Link className="nav-link" onClick={logout}>
+                    Logout
+                  </Link>
+                </div>
               ) : (
                 <Link className="nav-link" to="/login">
                   Login
